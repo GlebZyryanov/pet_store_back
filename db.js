@@ -1,4 +1,4 @@
-const {Sequelize} = require('sequelize')
+const {Sequelize} = require('sequelize')// библиотека для работы орм
 
 module.exports = new Sequelize(
     process.env.DB_NAME,
