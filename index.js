@@ -1,11 +1,15 @@
 require("dotenv").config();
-const express = require("express");
-const sequelize = require("./db");
-const models = require("./models/models");
+const express = require('express'); 
+const sequelize = require('./db');
+const models = require('./models/models');
+const cors = require('cors');
+const PORT = process.env.PORT || 5000; //настройка порта
 
-const PORT = process.env.PORT || 5000;
+const app = express(); //вызов сервера
+app.use(cors());
+app.use(express.json()); //передаем в функцию use express.json для того чтобы приложение могло парсить json формат
 
-const app = express();
+
 
 //функция для подключения к базе данных
 const start = async () => {

@@ -1,7 +1,7 @@
 //тут идет описание моделей(таблиц) и связей между ними
 
 const sequelize = require("../db");
-const { DataTypes } = require("sequelize"); // импортируем из файла бд объект сиквалайз орм, и из библиотеки импортируем класс, описывающий типы полей
+const { DataTypes } = require("sequelize"); // импортируем из файла бд объект орм, и из библиотеки импортируем класс, описывающий типы полей
 
 //создаем модели(таблицы)
 const User = sequelize.define("user", {
@@ -43,7 +43,7 @@ const Device_info = sequelize.define("device_info", {
   description: { type: DataTypes.STRING, unique: false, allowNull: false },
 });
 
-//Сшивочная таблица для type и brand
+//Расшивочная таблица для type и brand
 const TypeBrand = sequelize.define("typebrand", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
