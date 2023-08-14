@@ -1,15 +1,40 @@
-class DeviceController{
-    async create(req,res){
-        const {name, price, brandId, typeId, info} = req.body
-        
+const uuid = require("uuid");
+const path = require("path");
+const ApiError = require("../error/ApiError");
+const { Device } = require("../models/models");
+
+class DeviceController {
+  async create(req, res, next) {
+    try {
+      const { name, price, brandId, typeId, info } = req.body;
+      const { img } = req.files;
+
+      //генерация уникального имени для img
+      let filenName = uuid.v4() + ".jpg";
+
+      //1-й парам-р путь до текущ.папки, остальное переместим в файл fileName и папку static
+      img.mv(path.resolve(__dirname, "..", "static", filenName));
+
+      //создаем девайс и передаем в img НАЗВАНИЕ файла
+      const device = await Device.create({
+        name,
+        price,
+        brandId,
+        typeId,
+        img: filenName,
+      });
+
+      return res.json(device);
+    } catch (e) {
+      next(ApiError.badRequest(e.message));
     }
-    async getAll(req,res){
-        
-    }
-    async getOne(req,res){
-        
-    }
+  }
+
+  async getAll(req, res) {
     
+  }
+
+  async getOne(req, res) {}
 }
 
-module.exports = new DeviceController()
+module.exports = new DeviceController();
