@@ -31,21 +31,54 @@ class DeviceController {
   }
 
   async getAll(req, res) {
-    const { brandId, typeId } = req.query;
+    let { brandId, typeId, limit, page } = req.query;
+    page = page || 1;
+    limit = limit || 9;
+    let offset = page * limit - limit;
     let devices;
-
     if (!brandId && !typeId) {
-      devices = await Device.findAll();
-    } else {
-      const where = {};
-      if (brandId) {
-        where.brandId = brandId;
-      }
-      if (typeId) {
-        where.typeId = typeId;
-      }
-      devices = await Device.findAll({ where });
+      devices = await Device.findAndCountAll({ limit, offset });
     }
+    if (brandId && !typeId) {
+      devices = await Device.findAndCountAll({
+        where: { brandId },
+        limit,
+        offset,
+      });
+    }
+    if (!brandId && typeId) {
+      devices = await Device.findAndCountAll({
+        where: { typeId },
+        limit,
+        offset,
+      });
+    }
+    if (brandId && typeId) {
+      devices = await Device.findAndCountAll({
+        where: { brandId, typeId },
+        limit,
+        offset,
+      });
+    }
+    if (!brandId && !typeId) {
+      devices = await Device.findAndCountAll({ limit, offset });
+    }
+    // if (!brandId && !typeId) {
+    //   devices = await Device.findAndCountAll({ limit, offset });
+    // } else {
+    //   const w = {};
+    //   if (brandId) {
+    //     w.brandId = brandId;
+    //     w.limit = limit;
+    //     w.offset = offset;
+    //   }
+    //   if (typeId) {
+    //     w.typeId = typeId;
+    //     w.limit = limit;
+    //     w.offset = offset;
+    //   }
+    //   devices = await Device.findAndCountAll({  w, limit, offset  });
+    // }
     return res.json(devices);
   }
 
