@@ -31,7 +31,22 @@ class DeviceController {
   }
 
   async getAll(req, res) {
-    
+    const { brandId, typeId } = req.query;
+    let devices;
+
+    if (!brandId && !typeId) {
+      devices = await Device.findAll();
+    } else {
+      const where = {};
+      if (brandId) {
+        where.brandId = brandId;
+      }
+      if (typeId) {
+        where.typeId = typeId;
+      }
+      devices = await Device.findAll({ where });
+    }
+    return res.json(devices);
   }
 
   async getOne(req, res) {}
