@@ -70,7 +70,7 @@ Rating.belongsTo(Device);
 Device.hasMany(BasketDevice);
 BasketDevice.belongsTo(Device);
 
-Device.hasMany(Device_info);
+Device.hasMany(Device_info, {as:'info'});
 Device_info.belongsTo(Device);
 
 Type.belongsToMany(Brand, { through: TypeBrand });
