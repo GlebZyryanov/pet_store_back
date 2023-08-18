@@ -7,7 +7,7 @@ const { DataTypes } = require("sequelize"); // импортируем из фа�
 const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   email: { type: DataTypes.STRING, unique: true },
-  passport: { type: DataTypes.STRING },
+  password: { type: DataTypes.STRING },
   role: { type: DataTypes.STRING, defaultValue: "USER" },
 });
 
@@ -70,7 +70,7 @@ Rating.belongsTo(Device);
 Device.hasMany(BasketDevice);
 BasketDevice.belongsTo(Device);
 
-Device.hasMany(Device_info, {as:'info'});
+Device.hasMany(Device_info, { as: "info" });
 Device_info.belongsTo(Device);
 
 Type.belongsToMany(Brand, { through: TypeBrand });
