@@ -1,89 +1,82 @@
-//тут идет описание моделей(таблиц) и связей между ними
-
 const sequelize = require("../db");
-const { DataTypes } = require("sequelize"); // импортируем из файла бд объект орм, и из библиотеки импортируем класс, описывающий типы полей
+const { DataTypes } = require("sequelize");
 
-//создаем модели(таблицы)
 const User = sequelize.define("user", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  email: { type: DataTypes.STRING, unique: true },
-  password: { type: DataTypes.STRING },
+  email: {
+    type: DataTypes.STRING,
+    unique: true,
+    primaryKey: false,
+    autoIncrement: false,
+  },
+  password: { type: DataTypes.STRING, unique: false },
   role: { type: DataTypes.STRING, defaultValue: "USER" },
 });
 
 const Basket = sequelize.define("basket", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
-const BasketDevice = sequelize.define("basket_device", {
+const BasketTech = sequelize.define("basket_tech", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
-const Device = sequelize.define("device", {
+const Tech = sequelize.define("tech", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
+  year: { type: DataTypes.INTEGER, allowNull: false },
   price: { type: DataTypes.INTEGER, allowNull: false },
-  rating: { type: DataTypes.INTEGER, defaultValue: 0 },
   img: { type: DataTypes.STRING, allowNull: false },
-});
-
-const Type = sequelize.define("type", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 const Brand = sequelize.define("brand", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
-const Rating = sequelize.define("rating", {
+const Type = sequelize.define("type", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  rate: { type: DataTypes.INTEGER, unique: false, allowNull: false },
-});
-const Device_info = sequelize.define("device_info", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  title: { type: DataTypes.STRING, unique: false, allowNull: false },
-  description: { type: DataTypes.STRING, unique: false, allowNull: false },
+  name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
-//Расшивочная таблица для type и brand
-const TypeBrand = sequelize.define("typebrand", {
+const BasedPlatform = sequelize.define("based_platform", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  Наименование: { type: DataTypes.STRING, unique: true, allowNull: false },
+  Мощность: { type: DataTypes.INTEGER, allowNull: false },
+  Грузоподъемность: { type: DataTypes.INTEGER, allowNull: false },
+  Скорость: { type: DataTypes.INTEGER, allowNull: false },
+  Расход: { type: DataTypes.INTEGER, allowNull: false },
+  Масса: { type: DataTypes.INTEGER, allowNull: false },
+});
+
+const TypeBrand = sequelize.define("type_brand", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
-//настраиваем связи между таблицами
 
-User.hasOne(Basket);
+Type.belongsToMany(Brand, { through: TypeBrand }); //связь для связ.таблицы
+Brand.belongsToMany(Type, { through: TypeBrand });
+
+User.hasOne(Basket); //связь между юзером и корзиной
 Basket.belongsTo(User);
 
-User.hasMany(Rating);
-Rating.belongsTo(User);
+Basket.hasMany(BasketTech); //связь между корзиной и баскеттек
+BasketTech.belongsTo(Basket);
 
-Basket.hasMany(BasketDevice);
-BasketDevice.belongsTo(Basket);
+Tech.hasMany(BasketTech); //связь между тек и баскеттек
+BasketTech.belongsTo(Tech);
 
-Type.hasMany(Device);
-Device.belongsTo(Type);
+Brand.hasMany(Tech); //связь между брендом и теком
+Tech.belongsTo(Brand);
 
-Brand.hasMany(Device);
-Device.belongsTo(Brand);
+Type.hasMany(Tech); //связь между типом и теком
+Tech.belongsTo(Type);
 
-Device.hasMany(Rating);
-Rating.belongsTo(Device);
-
-Device.hasMany(BasketDevice);
-BasketDevice.belongsTo(Device);
-
-Device.hasMany(Device_info, { as: "info" });
-Device_info.belongsTo(Device);
-
-Type.belongsToMany(Brand, { through: TypeBrand });
-Brand.belongsToMany(Type, { through: TypeBrand });
+BasedPlatform.hasMany(Tech); //связь между базой и теком
+Tech.belongsTo(BasedPlatform);
 
 module.exports = {
   User,
   Basket,
-  BasketDevice,
-  Device,
-  Device_info,
-  Type,
+  BasketTech,
+  Tech,
   Brand,
-  Rating,
+  Type,
+  BasedPlatform,
   TypeBrand,
 };

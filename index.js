@@ -26,15 +26,21 @@ app.use("/api", router);
 //Обработка ошибок, последний middleWare
 app.use(ErrorHandler);
 
-//функция для подключения к базе данных
 const start = async () => {
-  try {
-    await sequelize.authenticate(); //эта функция устанавливает подключение к бд
-    await sequelize.sync(); // эта функция сверяет состояние бд со схемой бд
-    app.listen(PORT, () => console.log(`server starts on port ${PORT}`));
-  } catch (e) {
-    console.log(e);
-  }
-};
+    try{
+         await sequelize.authenticate() //устанавливаем подключение к бд
+         await sequelize.sync() //сверяет состояние бд со схемой данных
+        app.listen(PORT, () => {
+            console.log(`listening on ${PORT} port`);
+          });
+          
+    }catch(e){
+        console.log(e)
+    }
 
-start();
+
+}
+
+start()
+
+

@@ -1,4 +1,4 @@
-const ApiError = require("../error/ApiError");
+const ApiError = require("../error/APIError");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User, Basket } = require("../models/models");
@@ -10,11 +10,11 @@ const generateJWT = (id, email, role) => {
   });
 };
 
+
 class UserController {
   async registration(req, res, next) {
     const { email, password, role } = req.body;
-    //нормальную валидацию можно сделать позже
-    //пока что будет проверка в теле запроса на присутствие пароля и логина
+
     if (!email || !password) {
       return next(ApiError.badRequest("Некорректный email или пароль!"));
     }
